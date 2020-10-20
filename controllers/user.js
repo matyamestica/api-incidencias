@@ -52,9 +52,10 @@ function saveUser(req, res){
 function loginUser(req, res){
     var params = req.body;
 
+
     var rut = params.rut;
     var password = params.password;
-    console.log(email);
+    console.log(rut);
     console.log(password);
 
     User.findOne({rut: rut.toLowerCase()}, (err, user) => {

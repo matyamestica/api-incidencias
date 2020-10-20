@@ -2,6 +2,8 @@
 
 var path = require('path');
 var fs = require('fs');
+var moment = require('moment');
+
 
 var Answer = require('../models/answer');
 var Category = require('../models/category');
@@ -45,9 +47,10 @@ function saveAnswer(req, res){
     answer.problem = params.problem;
     answer.user = params.user;
     answer.message = params.message;
-    answer.date = params.date;
+    answer.date = new Date();
     answer.file = params.file;
     answer.type = params.type;
+   
 
     answer.save((err, answerStored) => {
 
