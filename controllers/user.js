@@ -5,10 +5,30 @@ var bcrypt = require('bcrypt-nodejs');
 var User = require('../models/user');
 var jwt = require('../services/jwt');
 
-function pruebas(req, res){
-    res.status(200).send({
-        message: 'Probando una accion del controlador de usuario'
+function getUsers(req, res){
+    if(req.params.page){
+        var page = req.params.page;
+    }else{
+        var page = 1;
+    }
+   
+    var itemsPerPage = 5;
+
+    User.find().sort('name').paginate(page, itemsPerPage, function(err, users, total){
+        if(err){
+            res.status(500).send({message:'Error en la petición'});
+        }else{
+            if(!users){
+                res.status(404).send({message: 'No hay usuarios'});
+            }else{
+                return res.status(200).send({
+                    total_items: total,
+                    users: users
+                });
+            }
+        }
     });
+
 }
 
 function saveUser(req, res){
@@ -139,7 +159,7 @@ function getImageFile(req, res){
 }
 
 module.exports = {
-    pruebas,
+    getUsers,
     loginUser,
     updateUser,
     uploadImage,

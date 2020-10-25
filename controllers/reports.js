@@ -23,7 +23,7 @@ async function connect() {
         const searchCursor = await problems.find({
             code: "2"
         });
-        const countCursor = await problems.countDocuments({
+        const countCursor = await problems.estimatedDocumentCount({
             state: "active"
         });
        
