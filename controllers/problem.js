@@ -14,7 +14,19 @@ const { checkServerIdentity } = require('tls');
 function getProblem(req, res){
     var problemId = req.params.id;
 
-    Problem.findById(problemId).populate({path: 'user_create'}).populate({path: 'category'}).populate({path: 'subcategory'}).populate({path: 'subject'}).populate({path: 'answers'}).exec((err, problem) => {
+    Problem.findById(problemId)
+    .populate({
+        path: 'user_create'
+    }).populate({
+        path: 'category'
+    }).populate({
+        path: 'subcategory'
+    }).populate({
+        path: 'subject'
+    }).populate({
+        path: 'answers',
+        populate: { path: 'user' }
+    }).exec((err, problem) => {
         if(err){
             res.status(500).send({message: 'Error en la petición'});
         }else{
@@ -71,7 +83,7 @@ function getProblems(req, res){
    
     var itemsPerPage = 15;
 
-    Problem.find().populate({path: 'user_create'}).populate({path: 'category'}).populate({path: 'subcategory'}).populate({path: 'subject'}).populate({path: 'answers'}).sort('name').paginate(page, itemsPerPage, function(err, problems, total){
+    Problem.find().populate({path: 'user_create'}).populate({path: 'category'}).populate({path: 'subcategory'}).populate({path: 'subject'}).populate({path: 'answers', populate: {path: 'user'}}).sort('name').paginate(page, itemsPerPage, function(err, problems, total){
         if(err){
             res.status(500).send({message:'Error en la petición'});
         }else{
