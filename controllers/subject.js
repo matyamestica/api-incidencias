@@ -56,7 +56,7 @@ function saveSubject(req, res){
     subject.name = params.name;
     subject.code = params.code;
     subject.teacher = params.teacher;
-    subject.file = params.file;
+
 
     subject.save((err, subjectStored) => {
         if(err){
