@@ -117,9 +117,50 @@ function updateProblem(req, res){
     });
 }
 
+function getProblemByUser(req, res) {
+var userId = req.params.userId;
+var aux = req.body;
+
+Problem.find({user_create: userId}).populate({path: 'user_create'}).populate({path: 'category'}).populate({path: 'subcategory'}).populate({path: 'subject'}).populate({path: 'answers', populate: {path: 'user'}}).sort('name').exec((err, problem) => {
+    if(err){
+        res.status(500).send({message: 'Error en la petición'});
+    }else{
+        if(!problem){
+            res.status(404).send({message: 'El problema no existe'});
+        }else{
+            res.status(200).send({problem});
+        }
+    }
+});
+
+}
+
+function closeProblem(req, res){
+    var problemId = req.params.id;
+    var update = 
+    {
+        state: -1,
+
+    };
+
+    Problem.findByIdAndUpdate(problemId, update, (err, problemUpdated) => {   
+        if(err){
+            res.status(500).send({message: 'Error al actualizar el Problema'});
+        }else{
+            if(!problemUpdated){
+                res.status(500).send({message: 'Error al actualizar el Problema'});
+            }else{
+                res.status(200).send({problem: problemUpdated});
+            }
+        }
+    });
+}
+
 module.exports = {
     getProblem,
     getProblems,
     saveProblem,
     updateProblem,
+    getProblemByUser,
+    closeProblem
 }
