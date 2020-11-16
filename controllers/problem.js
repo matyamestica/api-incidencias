@@ -57,7 +57,7 @@ function saveProblem(req, res){
     problem.subject = params.subject;
     problem.category = params.category;
     problem.subcategory = params.subcategory;
-    problem.state = "active";
+    problem.state = 'active';
     problem.date_create = new Date();//MODIFICAR PARA OBTENER FECHA DE CREACIÓN
     problem.date_fin = hourFin;//MODIFICAR PARA OBTENER FECHA DE CIERRE
 
@@ -156,11 +156,27 @@ function closeProblem(req, res){
     });
 }
 
+async function dataProblems(res){
+
+  const active = await Problem.estimatedDocumentCount({
+        state: 'active'
+    });
+    console.log(active);
+
+   const category1 = await Problem.estimatedDocumentCount({
+        subject: "RAMO 1"
+   });
+   console.log(category1);
+   
+    
+}
+
 module.exports = {
     getProblem,
     getProblems,
     saveProblem,
     updateProblem,
     getProblemByUser,
-    closeProblem
+    closeProblem,
+    dataProblems
 }
