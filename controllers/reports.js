@@ -24,7 +24,7 @@ async function connect() {
             code: "2"
         });
         const countCursor = await problems.estimatedDocumentCount({
-            state: "active"
+            state: "-1"
         });
        
         console.log(countCursor);

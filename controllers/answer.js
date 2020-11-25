@@ -124,8 +124,26 @@ var transporter = nodemailer.createTransport({
     
 }
 
+function updateAnswer(req, res){
+    var answerId = req.params.id;
+    var update = req.body;
+
+    Answer.findByIdAndUpdate(answerId, update, (err, answerUpdated) => {
+        if(err){
+            res.status(500).send({message: 'Error al guardar la Respuesta'});
+        }else{
+            if(!answerUpdated){
+                res.status(500).send({message: 'Error al actualizar la Respuesta'});
+            }else{
+                res.status(200).send({answer: answerUpdated});
+            }
+        }
+    });
+}    
+
 module.exports = {
     getAnswers,
     saveAnswer,
-    sendEmail
+    sendEmail,
+    updateAnswer
 }

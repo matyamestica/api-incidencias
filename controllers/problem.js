@@ -4,6 +4,8 @@ var path = require('path');
 var fs = require('fs');
 var moment = require('moment');
 
+
+var Answer = require('../models/answer');
 var Problem = require('../models/problem');
 var Subcategory = require('../models/subcategory');
 var Subject = require('../models/subject');
@@ -156,18 +158,55 @@ function closeProblem(req, res){
     });
 }
 
-async function dataProblems(res){
+function deleteProblem(req, res){
+    var problemId = req.params.id;
 
-  const active = await Problem.estimatedDocumentCount({
+    Problem.findByIdAndRemove(problemId, (err, problemRemoved) => {
+        if(err){
+            res.status(500).send({message: 'Error al eliminar la incidencia'});
+        }else{
+            if(!problemRemoved){
+                res.status(404).send({message: 'La incidencia no ha sido eliminada'});
+            }else{
+                res.status(200).send({problemRemoved});
+            }
+        }
+    });
+}
+
+async function dataProblems(req, res){
+
+  const active = await Problem.countDocuments({
         state: 'active'
     });
     console.log(active);
 
-   const category1 = await Problem.estimatedDocumentCount({
-        subject: "RAMO 1"
+   const closed = await Problem.countDocuments({
+        state: "-1"
    });
-   console.log(category1);
+   console.log(closed);
+
    
+   const answer_admin = await Answer.countDocuments({
+       user: "5edf0cfbef561a1ffc487705"
+   });
+   console.log(answer_admin);
+
+   const answer_secretary = await Answer.countDocuments({
+        user: "5fb261322c19c93fa46fdc94"
+   });
+
+   let response = { 
+       activos: active,
+       cerrados: closed,
+       director: answer_admin,
+       secretaria: answer_secretary
+   }
+   console.log(answer_secretary);
+   console.log(response);
+
+   res.status(200).send({response});
+
     
 }
 
@@ -178,5 +217,6 @@ module.exports = {
     updateProblem,
     getProblemByUser,
     closeProblem,
+    deleteProblem,
     dataProblems
 }
